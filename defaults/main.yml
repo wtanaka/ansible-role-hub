@@ -1,0 +1,12 @@
+---
+hub_version: "2.2.9"
+hub_os: "{{ansible_system|lower}}"
+hub_arch: "{%if ansible_architecture == 'x86_64'%}amd64{%else%}{{ansible_architecture}}{%endif%}"
+hub_base_url: "https://github.com/github/hub/releases/download"
+# TODO: Untested on windows
+hub_ext: "{%if ansible_system=='Windows'%}zip{%else%}tgz{%endif%}"
+hub_url: "{{hub_base_url}}/v{{hub_version}}/hub-{{hub_os}}-{{hub_arch}}-{{hub_version}}.{{hub_ext}}"
+hub_download_file: "/tmp/hub.{{hub_ext}}"
+hub_install_dir_parent: "/opt"
+hub_install_dir: "hub"
+hub_bin_dir: "/usr/local/bin"

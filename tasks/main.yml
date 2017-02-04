@@ -1,0 +1,50 @@
+---
+- include: compat.yml
+
+- include: include_vars.yml
+
+- include: install_package_names.yml
+
+- name: Check if hub is installed
+  command: "{{hub_bin_dir}}/hub --version"
+  register: version
+  failed_when: False
+  changed_when: False
+
+- name: Download hub
+  command: wget -O {{hub_download_file}} {{hub_url}}
+  args:
+    creates: "{{hub_download_file}}"
+  when: >
+    version|failed or
+    ('hub version %s' % hub_version) not in version.stdout
+
+- name: Make install directory
+  sudo: True
+  file:
+    path: "{{hub_install_dir_parent}}/{{hub_install_dir}}"
+    owner: root
+    state: directory
+  when: >
+    version|failed or
+    ('hub version %s' % hub_version) not in version.stdout
+
+- name: Unpack hub
+  sudo: True
+  command: tar xvfoz {{hub_download_file}} --strip-components 1
+  when: >
+    version|failed or
+    ('hub version %s' % hub_version) not in version.stdout
+  args:
+    chdir: "{{hub_install_dir_parent}}/{{hub_install_dir}}"
+    creates: "{{hub_install_dir_parent}}/{{hub_install_dir}}/bin/hub"
+
+- name: Create symlink
+  sudo: True
+  file:
+    src: "{{hub_install_dir_parent}}/{{hub_install_dir}}/bin/hub"
+    dest: "{{hub_bin_dir}}/hub"
+    state: link
+  when: >
+    version|failed or
+    ('hub version %s' % hub_version) not in version.stdout
