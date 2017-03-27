@@ -16,7 +16,15 @@ Example Playbook
            hub_version: "2.2.9"
            hub_bin_dir: /usr/local/bin
 
+The full set of configuration options available are visible in
+[defaults/main.yml](defaults/main.yml)
+
 License
 -------
 
 GPLv2
+
+Author Information
+------------------
+
+http://wtanaka.com/
